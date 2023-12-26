@@ -1,4 +1,4 @@
-FROM maven:3.8.5-openjdk-18-slim
+FROM maven:3.8.5-openjdk-18-slim AS build
 COPY . .
 RUN mvn clean package -DskipTests
 
