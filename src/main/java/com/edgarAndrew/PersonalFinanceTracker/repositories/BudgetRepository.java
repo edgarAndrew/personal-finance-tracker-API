@@ -1,5 +1,6 @@
 package com.edgarAndrew.PersonalFinanceTracker.repositories;
 
+import com.edgarAndrew.PersonalFinanceTracker.models.BankAccount;
 import com.edgarAndrew.PersonalFinanceTracker.models.Budget;
 import com.edgarAndrew.PersonalFinanceTracker.models.user.User;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -25,4 +26,5 @@ public interface BudgetRepository extends JpaRepository<Budget,Long> {
             "AND b.startDate <= :currentDate " +
             "AND b.endDate >= :currentDate")
     Optional<Budget> findBudgetForCurrentMonth(@Param("user") User user, @Param("currentDate") LocalDate currentDate);
+    List<Budget>  findByUser(User user);
 }

@@ -1,11 +1,14 @@
 package com.edgarAndrew.PersonalFinanceTracker.controllers;
 
+import com.edgarAndrew.PersonalFinanceTracker.DTO.bank.GetBankAccountsResponse;
 import com.edgarAndrew.PersonalFinanceTracker.models.Budget;
 import com.edgarAndrew.PersonalFinanceTracker.services.BudgetService;
 import com.edgarAndrew.PersonalFinanceTracker.DTO.budget.*;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/v1/budgets")
@@ -39,4 +42,9 @@ public class BudgetController {
         return ResponseEntity.status(HttpStatus.OK).body(new UpdateBudgetResponse("Budget updated"));
     }
 
+    @GetMapping("/my-budgets")
+    public ResponseEntity<?> getMyBudgets(){
+        List<GetBudgetsResponse> budgets = budgetService.getMyBudgets();
+        return ResponseEntity.status(HttpStatus.OK).body(budgets);
+    }
 }

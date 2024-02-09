@@ -1,8 +1,11 @@
 package com.edgarAndrew.PersonalFinanceTracker.services;
 
+import com.edgarAndrew.PersonalFinanceTracker.DTO.bank.GetBankAccountsResponse;
+import com.edgarAndrew.PersonalFinanceTracker.DTO.budget.GetBudgetsResponse;
 import com.edgarAndrew.PersonalFinanceTracker.exceptions.budget.BudgetNotFoundException;
 import com.edgarAndrew.PersonalFinanceTracker.exceptions.budget.DuplicateBudgetException;
 import com.edgarAndrew.PersonalFinanceTracker.exceptions.user.AuthorizationException;
+import com.edgarAndrew.PersonalFinanceTracker.models.BankAccount;
 import com.edgarAndrew.PersonalFinanceTracker.models.Budget;
 import com.edgarAndrew.PersonalFinanceTracker.repositories.BudgetRepository;
 import com.edgarAndrew.PersonalFinanceTracker.DTO.budget.UpdateBudgetRequest;
@@ -13,7 +16,10 @@ import org.springframework.stereotype.Service;
 import com.edgarAndrew.PersonalFinanceTracker.models.user.User;
 import java.time.LocalDate;
 import java.time.YearMonth;
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
+
 import com.edgarAndrew.PersonalFinanceTracker.exceptions.bank.InsufficientFundsException;
 
 @Service
@@ -118,5 +124,23 @@ public class BudgetService {
             budget.setName(updateBudgetRequest.getBudgetName());
 
         budgetRepository.save(budget);
+    }
+    public List<GetBudgetsResponse> getMyBudgets(){
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        User user = (User) authentication.getPrincipal();
+
+        List<Budget> budgets = budgetRepository.findByUser(user);
+
+        return budgets.stream()
+                .map(budget -> new GetBudgetsResponse(
+                        budget.getId(),
+                        budget.getName(),
+                        budget.getStartAmount(),
+                        budget.getCurrentAmount(),
+                        budget.getEndDate(),
+                        budget.getStartDate()
+                ))
+                .collect(Collectors.toList());
+
     }
 }
