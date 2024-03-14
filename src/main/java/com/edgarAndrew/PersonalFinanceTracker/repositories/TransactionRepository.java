@@ -29,4 +29,15 @@ public interface TransactionRepository extends JpaRepository<Transaction,Long> {
             @Param("endDateTime") LocalDateTime endDateTime,
             Pageable pageable
     );
+
+    @Query("SELECT t FROM Transaction t WHERE t.bankAccount.user = :user " +
+            "AND t.type = :type AND t.date BETWEEN :startDateTime AND :endDateTime " +
+            "ORDER BY t.date DESC")
+    Page<Transaction> findTransactionsByUserAndDateBetweenAndType(
+            @Param("user") User user,
+            @Param("startDateTime") LocalDateTime startDateTime,
+            @Param("endDateTime") LocalDateTime endDateTime,
+            @Param("type") String type,
+            Pageable pageable
+    );
 }

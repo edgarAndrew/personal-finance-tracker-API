@@ -152,8 +152,8 @@ public class TransactionService {
             Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
             User user = (User) authentication.getPrincipal();
 
-            Page<Transaction> transactions = transactionRepository.findTransactionsByUserAndDateBetween(
-                    user, startDateTime, endDateTime, pageable);
+            Page<Transaction> transactions = transactionRepository.findTransactionsByUserAndDateBetweenAndType(
+                    user, startDateTime, endDateTime, type ,pageable);
 
             return transactions.map(transaction -> new GetTransactionResponse(
                     transaction.getId(),
