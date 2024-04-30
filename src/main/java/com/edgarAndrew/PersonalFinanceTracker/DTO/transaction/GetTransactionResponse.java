@@ -10,16 +10,26 @@ public class GetTransactionResponse {
     private String type;
     private Transaction.Category category;
     private LocalDateTime date;
+    private String account;
 
     public GetTransactionResponse() {
     }
 
-    public GetTransactionResponse(Long id, double amount, String type, Transaction.Category category, LocalDateTime date) {
+    public String getAccount() {
+        return account;
+    }
+
+    public void setAccount(String account) {
+        this.account = account;
+    }
+
+    public GetTransactionResponse(Long id, double amount, String type, Transaction.Category category, LocalDateTime date, String account) {
         this.id = id;
         this.amount = amount;
         this.type = type;
         this.category = category;
         this.date = date;
+        this.account = account;
     }
 
     public Long getId() {

@@ -106,7 +106,8 @@ public class TransactionService {
                         transaction.getAmount(),
                         transaction.getType(),
                         transaction.getCategory(),
-                        transaction.getDate()
+                        transaction.getDate(),
+                        transaction.getBankAccount().getAccountNumber()
                 ))
                 .collect(Collectors.toList());
 
@@ -132,7 +133,8 @@ public class TransactionService {
                             transaction.getAmount(),
                             transaction.getType(),
                             transaction.getCategory(),
-                            transaction.getDate()
+                            transaction.getDate(),
+                            transaction.getBankAccount().getAccountNumber()
                     ))
                     .collect(Collectors.toList());
         }else
@@ -160,7 +162,8 @@ public class TransactionService {
                     transaction.getAmount(),
                     transaction.getType(),
                     transaction.getCategory(),
-                    transaction.getDate()
+                    transaction.getDate(),
+                    transaction.getBankAccount().getAccountNumber()
             ));
         } else {
             throw new IllegalArgumentException("'type' can only be 'INCOME' or 'EXPENSE'");
@@ -182,7 +185,8 @@ public class TransactionService {
                 transaction.getAmount(),
                 transaction.getType(),
                 transaction.getCategory(),
-                transaction.getDate()
+                transaction.getDate(),
+                transaction.getBankAccount().getAccountNumber()
         ));
     }
 
@@ -238,7 +242,8 @@ public class TransactionService {
                 transaction.getAmount(),
                 transaction.getType(),
                 transaction.getCategory(),
-                transaction.getDate()
+                transaction.getDate(),
+                transaction.getBankAccount().getAccountNumber()
         ));
     }
 }
