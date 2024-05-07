@@ -12,6 +12,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import java.util.List;
 
 import java.time.LocalDate;
 
@@ -23,9 +24,18 @@ public class GoalService {
         this.goalRepository = goalRepository;
     }
 
+    public List<Goal> getAllGoalsByUser() {
+        // Retrieve the authenticated user
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        User user = (User) authentication.getPrincipal();
+
+        // Fetch all goals associated with the user
+        return goalRepository.findByUser(user);
+    }
+
     @Transactional
     public Goal addGoal(String name, double targetAmount, LocalDate startDate, LocalDate endDate) {
-        if (startDate.isAfter(endDate)) {
+        if (startDate.isAfter(endDate) || startDate.isEqual(endDate)) {
             throw new IllegalArgumentException("Start date must be before the end date");
         }
 

@@ -7,6 +7,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 @RestController
 @RequestMapping("/api/v1/goals")
 public class GoalController {
@@ -15,6 +18,21 @@ public class GoalController {
 
     public GoalController(GoalService goalService) {
         this.goalService = goalService;
+    }
+
+    @GetMapping
+    public ResponseEntity<?> getAllGoals() {
+        List<Goal> goals = goalService.getAllGoalsByUser();
+        List<GetGoalResponse> responseList = goals.stream()
+                .map(goal -> new GetGoalResponse(
+                        goal.getId(),
+                        goal.getName(),
+                        goal.getTargetAmount(),
+                        goal.getCurrentAmount(),
+                        goal.getStartDate(),
+                        goal.getEndDate()))
+                .toList();
+        return ResponseEntity.ok(responseList);
     }
 
     @PostMapping
