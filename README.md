@@ -8,3 +8,5 @@ java -jar target/PersonalFinanceTracker-0.0.1-SNAPSHOT.jar
 ```
 
 #### React Native App consuming this API https://github.com/edgarAndrew/WealthTrack
+
+#### Import the personal_finance_tracker collection file provided in postman to view API endpoints
