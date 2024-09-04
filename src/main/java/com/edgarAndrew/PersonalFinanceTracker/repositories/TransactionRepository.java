@@ -40,4 +40,17 @@ public interface TransactionRepository extends JpaRepository<Transaction,Long> {
             @Param("type") String type,
             Pageable pageable
     );
+
+    @Query("SELECT t FROM Transaction t WHERE t.bankAccount.user = :user AND t.bankAccount.id=:bankAccountId ORDER BY t.date DESC")
+    List<Transaction> findTransactionsByUserAndBankAccount(
+            @Param("user") User user,
+            @Param("bankAccountId") Long bankAccountId
+    );
+
+    @Query("SELECT t FROM Transaction t WHERE t.bankAccount.user = :user AND t.bankAccount.id=:bankAccountId AND t.type = :type ORDER BY t.date DESC")
+    List<Transaction> findTransactionsByUserAndBankAccountAndType(
+            @Param("user") User user,
+            @Param("bankAccountId") Long bankAccountId,
+            @Param("type") String type
+    );
 }

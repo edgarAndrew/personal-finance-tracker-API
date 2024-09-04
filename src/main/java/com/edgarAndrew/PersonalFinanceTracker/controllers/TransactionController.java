@@ -54,6 +54,18 @@ public class TransactionController {
         return ResponseEntity.ok(categories);
     }
 
+    @GetMapping("/bank-account")
+    public ResponseEntity<?> getByBankAccount(
+            @RequestParam(name="id",required = true) Long id,
+            @RequestParam(name="type",required = false,defaultValue = "BOTH") String type,
+            @RequestParam(name ="page", defaultValue = "0") Integer page,
+            @RequestParam(name = "size", defaultValue = "6") Integer size
+    ) {
+
+        Page<GetTransactionResponse> transactions = transactionService.getTransactionByBankAccount(id,type,page,size);
+        return ResponseEntity.status(HttpStatus.OK).body(transactions);
+    }
+
     @GetMapping
     public ResponseEntity<?> getTransactions(
             @RequestParam(name="day",required = false) Integer day,
@@ -64,6 +76,7 @@ public class TransactionController {
             @RequestParam(name ="page", defaultValue = "0") Integer page,
             @RequestParam(name = "size", defaultValue = "10") Integer size
     ) {
+
         LocalDate startDate = null;
         LocalDate endDate=null;
         Pageable p = PageRequest.of(page,size);

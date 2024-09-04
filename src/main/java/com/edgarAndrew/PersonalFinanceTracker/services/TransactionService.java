@@ -5,6 +5,7 @@ import com.edgarAndrew.PersonalFinanceTracker.exceptions.transaction.GetTransact
 import com.edgarAndrew.PersonalFinanceTracker.exceptions.transaction.InvalidCategoryException;
 import com.edgarAndrew.PersonalFinanceTracker.exceptions.transaction.TransactionNotFoundException;
 import com.edgarAndrew.PersonalFinanceTracker.exceptions.user.AuthorizationException;
+import com.edgarAndrew.PersonalFinanceTracker.helpers.ListToPageConverter;
 import com.edgarAndrew.PersonalFinanceTracker.models.BankAccount;
 import com.edgarAndrew.PersonalFinanceTracker.models.Transaction;
 import com.edgarAndrew.PersonalFinanceTracker.models.user.User;
@@ -166,7 +167,7 @@ public class TransactionService {
                     transaction.getBankAccount().getAccountNumber()
             ));
         } else {
-            throw new IllegalArgumentException("'type' can only be 'INCOME' or 'EXPENSE'");
+            throw new IllegalArgumentException("'type' can only be 'INCOME' or 'EXPENSE' or 'BOTH' ");
         }
     }
 
@@ -245,5 +246,64 @@ public class TransactionService {
                 transaction.getDate(),
                 transaction.getBankAccount().getAccountNumber()
         ));
+    }
+
+    public Page<GetTransactionResponse> getTransactionByBankAccount(Long bankAccountId,String type, Integer page, Integer pageSize){
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        User user = (User) authentication.getPrincipal();
+
+        List<Transaction> temp;
+        if(type.equals("EXPENSE") || type.equals("INCOME")){
+             temp = transactionRepository.findTransactionsByUserAndBankAccountAndType(user,bankAccountId,type);
+
+        }else{
+            temp = transactionRepository.findTransactionsByUserAndBankAccountAndType(user,bankAccountId,type);
+        }
+
+        PageRequest pageRequest = PageRequest.of(page, pageSize);
+        return ListToPageConverter.convertListToPage(temp, pageRequest);
+    }
+
+    public Page<GetTransactionResponse> getTransactionsByBankAccount(
+            Long bankAccountId, LocalDate startDate, LocalDate endDate,String type,Pageable pageable) {
+
+        LocalDateTime startDateTime = startDate.atStartOfDay();
+        LocalDateTime endDateTime = endDate.atTime(23, 59, 59);
+
+        // Get the authenticated user
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        User user = (User) authentication.getPrincipal();
+
+        if (type.equals("BOTH")) {
+            List<Transaction> temp = transactionRepository.findByBankAccountUser(user);
+            System.out.println(temp);
+
+            Page<Transaction> transactions = transactionRepository.findTransactionsByUserAndDateBetween(
+                    user, startDateTime, endDateTime, pageable);
+
+            return transactions.map(transaction -> new GetTransactionResponse(
+                    transaction.getId(),
+                    transaction.getAmount(),
+                    transaction.getType(),
+                    transaction.getCategory(),
+                    transaction.getDate(),
+                    transaction.getBankAccount().getAccountNumber()
+            ));
+
+        } else if (type.equals("INCOME") || type.equals("EXPENSE")) {
+            Page<Transaction> transactions = transactionRepository.findTransactionsByUserAndDateBetween(
+                    user, startDateTime, endDateTime, pageable);
+
+            return transactions.map(transaction -> new GetTransactionResponse(
+                    transaction.getId(),
+                    transaction.getAmount(),
+                    transaction.getType(),
+                    transaction.getCategory(),
+                    transaction.getDate(),
+                    transaction.getBankAccount().getAccountNumber()
+            ));
+        } else {
+            throw new IllegalArgumentException("'type' can only be 'INCOME' or 'EXPENSE' or 'BOTH' ");
+        }
     }
 }
